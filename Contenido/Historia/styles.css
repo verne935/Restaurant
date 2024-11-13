@@ -57,3 +57,11 @@ section p {
     margin: 10px 0;
     color: #333;
 }
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    color: black;
+    font-size: 17px;
+    margin-top: 20px;
+}
