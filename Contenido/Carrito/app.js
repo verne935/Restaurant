@@ -1,7 +1,7 @@
+
 // Variable que mantiene el estado visible del carrito
 var carritoVisible = false;
 
-// Esperamos que todos los elementos de la página carguen para ejecutar el script
 if (document.readyState == 'loading') {
     document.addEventListener('DOMContentLoaded', ready);
 } else {
@@ -9,49 +9,34 @@ if (document.readyState == 'loading') {
 }
 
 function ready() {
-    // Agregamos funcionalidad a los botones eliminar del carrito
+    // Agregar funcionalidad a los botones del carrito
     var botonesEliminarItem = document.getElementsByClassName('btn-eliminar');
     for (var i = 0; i < botonesEliminarItem.length; i++) {
         var button = botonesEliminarItem[i];
         button.addEventListener('click', eliminarItemCarrito);
     }
 
-    // Agrego funcionalidad al botón sumar cantidad
     var botonesSumarCantidad = document.getElementsByClassName('sumar-cantidad');
     for (var i = 0; i < botonesSumarCantidad.length; i++) {
         var button = botonesSumarCantidad[i];
         button.addEventListener('click', sumarCantidad);
     }
 
-    // Agrego funcionalidad al botón restar cantidad
     var botonesRestarCantidad = document.getElementsByClassName('restar-cantidad');
     for (var i = 0; i < botonesRestarCantidad.length; i++) {
         var button = botonesRestarCantidad[i];
         button.addEventListener('click', restarCantidad);
     }
 
-    // Agregamos funcionalidad al botón Agregar al carrito
     var botonesAgregarAlCarrito = document.getElementsByClassName('boton-item');
     for (var i = 0; i < botonesAgregarAlCarrito.length; i++) {
         var button = botonesAgregarAlCarrito[i];
         button.addEventListener('click', agregarAlCarritoClicked);
     }
 
-    // Agregamos funcionalidad al botón comprar
-    document.getElementsByClassName('btn-pagar')[0].addEventListener('click', pagarClicked);
+    actualizarTotalCarrito(); // Inicializar el total del carrito
 }
 
-// Eliminamos todos los elementos del carrito y lo ocultamos
-function pagarClicked() {
-    var carritoItems = document.getElementsByClassName('carrito-items')[0];
-    while (carritoItems.hasChildNodes()) {
-        carritoItems.removeChild(carritoItems.firstChild);
-    }
-    actualizarTotalCarrito();
-    ocultarCarrito();
-}
-
-// Función que controla el botón clickeado de agregar al carrito
 function agregarAlCarritoClicked(event) {
     var button = event.target;
     var item = button.parentElement;
@@ -63,7 +48,6 @@ function agregarAlCarritoClicked(event) {
     hacerVisibleCarrito();
 }
 
-// Función que hace visible el carrito
 function hacerVisibleCarrito() {
     carritoVisible = true;
     var carrito = document.getElementsByClassName('carrito')[0];
@@ -74,16 +58,14 @@ function hacerVisibleCarrito() {
     items.style.width = '60%';
 }
 
-// Función que agrega un item al carrito
 function agregarItemAlCarrito(titulo, precio, imagenSrc) {
     var item = document.createElement('div');
     item.classList.add('item');
     var itemsCarrito = document.getElementsByClassName('carrito-items')[0];
 
-    // Controlamos que el item que intenta ingresar no se encuentre en el carrito
     var nombresItemsCarrito = itemsCarrito.getElementsByClassName('carrito-item-titulo');
     for (var i = 0; i < nombresItemsCarrito.length; i++) {
-        if (nombresItemsCarrito[i].innerText == titulo) {
+        if (nombresItemsCarrito[i].innerText === titulo) {
             alert("El item ya se encuentra en el carrito");
             return;
         }
@@ -109,49 +91,38 @@ function agregarItemAlCarrito(titulo, precio, imagenSrc) {
     item.innerHTML = itemCarritoContenido;
     itemsCarrito.append(item);
 
-    // Agregamos la funcionalidad eliminar al nuevo item
     item.getElementsByClassName('btn-eliminar')[0].addEventListener('click', eliminarItemCarrito);
     item.getElementsByClassName('restar-cantidad')[0].addEventListener('click', restarCantidad);
     item.getElementsByClassName('sumar-cantidad')[0].addEventListener('click', sumarCantidad);
 
-    // Actualizamos total
     actualizarTotalCarrito();
 }
 
-// Aumento en uno la cantidad del elemento seleccionado
 function sumarCantidad(event) {
-    var buttonClicked = event.target;
-    var selector = buttonClicked.parentElement;
+    var selector = event.target.parentElement;
     var cantidadActual = parseInt(selector.getElementsByClassName('carrito-item-cantidad')[0].value);
-    cantidadActual++;
-    selector.getElementsByClassName('carrito-item-cantidad')[0].value = cantidadActual;
+    selector.getElementsByClassName('carrito-item-cantidad')[0].value = cantidadActual + 1;
     actualizarTotalCarrito();
 }
 
-// Resto en uno la cantidad del elemento seleccionado
 function restarCantidad(event) {
-    var buttonClicked = event.target;
-    var selector = buttonClicked.parentElement;
+    var selector = event.target.parentElement;
     var cantidadActual = parseInt(selector.getElementsByClassName('carrito-item-cantidad')[0].value);
     if (cantidadActual > 1) {
-        cantidadActual--;
-        selector.getElementsByClassName('carrito-item-cantidad')[0].value = cantidadActual;
+        selector.getElementsByClassName('carrito-item-cantidad')[0].value = cantidadActual - 1;
         actualizarTotalCarrito();
     }
 }
 
-// Elimino el item seleccionado del carrito
 function eliminarItemCarrito(event) {
-    var buttonClicked = event.target;
-    buttonClicked.parentElement.parentElement.remove();
+    event.target.parentElement.parentElement.remove();
     actualizarTotalCarrito();
     ocultarCarrito();
 }
 
-// Función que controla si hay elementos en el carrito. Si no hay, oculto el carrito.
 function ocultarCarrito() {
     var carritoItems = document.getElementsByClassName('carrito-items')[0];
-    if (carritoItems.childElementCount == 0) {
+    if (carritoItems.childElementCount === 0) {
         var carrito = document.getElementsByClassName('carrito')[0];
         carrito.style.marginRight = '-100%';
         carrito.style.opacity = '0';
@@ -162,7 +133,6 @@ function ocultarCarrito() {
     }
 }
 
-// Actualizamos el total de Carrito
 function actualizarTotalCarrito() {
     var carritoContenedor = document.getElementsByClassName('carrito')[0];
     var carritoItems = carritoContenedor.getElementsByClassName('carrito-item');
@@ -170,17 +140,53 @@ function actualizarTotalCarrito() {
 
     for (let i = 0; i < carritoItems.length; i++) {
         var item = carritoItems[i];
-        var precioElemento = item.getElementsByClassName('carrito-item-precio')[0];
-        var precio = parseFloat(precioElemento.innerText.replace('$', '').replace('.', ''));
-        var cantidadItem = item.getElementsByClassName('carrito-item-cantidad')[0];
-        var cantidad = parseInt(cantidadItem.value);
-
-        total += precio * cantidad; // Acumula el total
+        var precio = parseFloat(item.getElementsByClassName('carrito-item-precio')[0].innerText.replace('$', '').replace(',', ''));
+        var cantidad = parseInt(item.getElementsByClassName('carrito-item-cantidad')[0].value);
+        total += precio * cantidad;
     }
 
     total = Math.round(total * 100) / 100;
     document.getElementsByClassName('carrito-precio-total')[0].innerText = '$' + total.toLocaleString("es") + ",00";
+
+    // Actualizar el monto en el formulario de PayPal
+    document.getElementById('paypal-amount').value = total;
 }
+// Mostrar el popup al cargar la página
+window.addEventListener('load', function() {
+    const popup = document.getElementById('popup');
+    popup.style.opacity = '1';
+    popup.style.visibility = 'visible';
+});
+
+// Función para cerrar el popup
+function cerrarPopup() {
+    const popup = document.getElementById('popup');
+    popup.style.opacity = '0';
+    popup.style.visibility = 'hidden';
+}
+
+
+// Función para verificar la conexión a Internet
+        function verificarConexion() {
+            if (!navigator.onLine) {
+                // Redirige a la página de error 404 personalizada
+                window.location.href = '404.html';
+            }
+        }
+
+        // Llama a la función para verificar la conexión cuando se carga la página
+        verificarConexion();
+
+        // Opción: Puedes hacer una verificación periódica cada cierto tiempo
+        setInterval(verificarConexion, 2000); // Cada 5 segundos
+
+
+
+
+
+
+
+
 
 // Lista de productos
 const productos = [
@@ -250,16 +256,41 @@ function filtrarProductos() {
         botonAgregar.addEventListener('click', agregarAlCarritoClicked);
     });
 }
-// Mostrar el popup al cargar la página
-window.addEventListener('load', function() {
-    const popup = document.getElementById('popup');
-    popup.style.opacity = '1';
-    popup.style.visibility = 'visible';
+
+
+
+
+// Función para redirigir a la sección del carrito
+function scrollToSection() {
+  document.getElementById("carrito").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+// Habilita arrastrar el botón flotante
+const floatingCart = document.getElementById("floating-cart");
+
+let offsetX, offsetY;
+
+// Manejador de inicio de arrastre
+floatingCart.addEventListener("mousedown", (e) => {
+  offsetX = e.clientX - floatingCart.getBoundingClientRect().left;
+  offsetY = e.clientY - floatingCart.getBoundingClientRect().top;
+  document.addEventListener("mousemove", moveFloatingCart);
+  document.addEventListener("mouseup", stopMovingFloatingCart);
 });
 
-// Función para cerrar el popup
-function cerrarPopup() {
-    const popup = document.getElementById('popup');
-    popup.style.opacity = '0';
-    popup.style.visibility = 'hidden';
+// Función para mover el botón al arrastrar
+function moveFloatingCart(e) {
+  floatingCart.style.left = `${e.clientX - offsetX}px`;
+  floatingCart.style.top = `${e.clientY - offsetY}px`;
+  floatingCart.style.right = "auto"; // Quita la posición inicial de right
+  floatingCart.style.bottom = "auto"; // Quita la posición inicial de bottom
 }
+
+// Función para detener el movimiento
+function stopMovingFloatingCart() {
+  document.removeEventListener("mousemove", moveFloatingCart);
+  document.removeEventListener("mouseup", stopMovingFloatingCart);
+}
+
