@@ -69,7 +69,7 @@ section p {
 
 @media (max-width: 600px) {
     .footer {
-        font-size: 15px; /* Tamaño de letra más pequeño en pantallas móviles */
+        font-size: 12px; /* Tamaño de letra más pequeño en pantallas móviles */
         padding: 8px;
     }
 
